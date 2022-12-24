@@ -1,6 +1,6 @@
 const Drawer = () => {
     return(
-        <div  className="overlay">
+        <div  className="overlay" style={{display: 'none'}}>
             <div className="drawer">
                 <h2>Корзина <img className="removeBtn" src="/img/btn-remove.svg" alt="remove"/></h2>
                 <div className="items">
