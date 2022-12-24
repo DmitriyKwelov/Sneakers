@@ -67,6 +67,7 @@ header {
       margin-right: 30px;
       display: flex;
       align-items: center;
+      cursor: pointer;
       img{
         margin-right: 10px;
       }
@@ -81,6 +82,7 @@ header {
 }
 .sneakers{
   display: flex;
+  flex-wrap: wrap;
 }
 .top-content-cart {
   display: flex;

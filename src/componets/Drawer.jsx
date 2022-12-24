@@ -1,34 +1,19 @@
-const Drawer = () => {
+const Drawer = ({onClose, items = []}) => {
     return(
-        <div  className="overlay" style={{display: 'none'}}>
+        <div  className="overlay">
             <div className="drawer">
-                <h2>Корзина <img className="removeBtn" src="/img/btn-remove.svg" alt="remove"/></h2>
+                <h2>Корзина <img onClick={onClose} className="removeBtn" src="/img/btn-remove.svg" alt="remove"/></h2>
                 <div className="items">
-                    <div className="cartItem">
-                        <div className="cartItemImg" style={{backgroundImage: 'url(/img/sneakers/1.jpg)'}}></div>
-                        <div className="card-info-cart">
-                            <p>Мужские Кроссовки Nike Air Max 270</p>
-                            <b>12 999 руб.</b>
+                    {items.map((item) =>
+                        <div className="cartItem">
+                            <div className="cartItemImg" style={{backgroundImage: `url(${item.imageUrl})`}}></div>
+                            <div className="card-info-cart">
+                                <p>{item.title}</p>
+                                <b>{item.price}</b>
+                            </div>
+                            <img className="removeBtn" src="/img/btn-remove.svg" alt="remove"/>
                         </div>
-                        <img className="removeBtn" src="/img/btn-remove.svg" alt="remove"/>
-                    </div>
-                    <div className="cartItem">
-                        <div className="cartItemImg" style={{backgroundImage: 'url(/img/sneakers/1.jpg)'}}></div>
-                        <div className="card-info-cart">
-                            <p>Мужские Кроссовки Nike Air Max 270</p>
-                            <b>12 999 руб.</b>
-                        </div>
-                        <img className="removeBtn" src="/img/btn-remove.svg" alt="remove"/>
-                    </div>
-                    <div className="cartItem">
-                        <div className="cartItemImg" style={{backgroundImage: 'url(/img/sneakers/1.jpg)'}}></div>
-                        <div className="card-info-cart">
-                            <p>Мужские Кроссовки Nike Air Max 270</p>
-                            <b>12 999 руб.</b>
-                        </div>
-                        <img className="removeBtn" src="/img/btn-remove.svg" alt="remove"/>
-                    </div>
-
+                    )}
                 </div>
                 <div className="cartTotalBlock">
                     <ul className="cardTotalBlock">
