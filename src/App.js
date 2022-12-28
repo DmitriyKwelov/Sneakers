@@ -3,6 +3,9 @@ import Header from "./componets/Header";
 import Drawer from "./componets/Drawer";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {Route, Routes} from "react-router-dom";
+import Home from "./componets/Home";
+import Favorite from "./componets/Favorites";
 
 
 function App() {
@@ -19,6 +22,9 @@ function App() {
         axios.get('https://63a74c2959fd83b1bb42f822.mockapi.io/cart').then(res => {
             setCartItems(res.data)
         })
+        axios.get('https://63a74c2959fd83b1bb42f822.mockapi.io/favorites').then(res => {
+            setFavorites(res.data)
+        })
     }, [])
 
     const onAddToCart = (obj) => {
@@ -31,9 +37,18 @@ function App() {
         setCartItems((prev) => prev.filter(item => item.id !== id))
     }
 
-    const onAddToFavorite = (obj) => {
-        axios.post('https://63a74c2959fd83b1bb42f822.mockapi.io/favorites', obj);
-        setFavorites((prev) => [...prev, obj])
+    const onAddToFavorite = async (obj) => {
+        try {
+            if(favorites.find(obj1 => obj1.id === obj.id)){
+                axios.delete(`https://63a74c2959fd83b1bb42f822.mockapi.io/favorites/${obj.id}`);
+                // setFavorites((prev) => prev.filter((item) => item.id != obj.id))
+            } else{
+                const {data} = await axios.post('https://63a74c2959fd83b1bb42f822.mockapi.io/favorites', obj);
+                    setFavorites((prev) => [...prev, data])
+            }
+        } catch (error) {
+            alert("не удалось добавить в фавориты")
+        }
     }
 
     const onChangeSearchInput = (event) => {
@@ -44,34 +59,10 @@ function App() {
         <div className="wrapper clear">
             {isCartOpen && <Drawer items={cartItems} onClose={() => setIsCartOpen(false)} onRemove={onRemoveItem}/>}
             <Header onClickCart={() => setIsCartOpen(true)}/>
-            <div className="content">
-                <div className="top-content-cart">
-                    <h1 className="main-title">{searchValue ? `Поиск по запросу: "${searchValue}"` : 'Все кроссовки'}</h1>
-                    <div className="search-block">
-                        <img src="/img/search.svg" alt="Search"/>
-                        {searchValue &&
-                            <img className="clear" onClick={() => setSearchValue('')} src="/img/btn-remove.svg"
-                                 alt="clear"/>}
-                        <input onChange={onChangeSearchInput} value={searchValue} type="text" placeholder="Поиск..."/>
-                    </div>
-                </div>
-                <div className="sneakers">
-                    {items
-                        .filter((item) => item.name.toLowerCase().includes(searchValue.toLowerCase()))
-                        .map((item, index) => (
-                            <Card
-                                key={index}
-                                title={item.name}
-                                price={item.price}
-                                imageUrl={item.imageUrl}
-                                onFavorite={(obj) => onAddToFavorite(obj)}
-                                onPlus={(obj) => onAddToCart(obj)}
-                            />
-                        ))
-                    }
-                </div>
-            </div>
-
+            <Routes>
+                <Route path="/" element={<Home items={items} searchValue={searchValue} setSearchValue={setSearchValue} onChangeSearchInput={onChangeSearchInput} onAddToFavorite={onAddToFavorite} onAddToCart={onAddToCart}/>}></Route>
+                <Route path="/favorites" element={<Favorite items={favorites} onFavorite={onAddToFavorite} />}/>
+            </Routes>
         </div>
     );
 }
