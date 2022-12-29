@@ -28,8 +28,12 @@ function App() {
     }, [])
 
     const onAddToCart = (obj) => {
-        axios.post('https://63a74c2959fd83b1bb42f822.mockapi.io/cart', obj);
-        setCartItems(prev => [...prev, obj])
+        if(cartItems.find((item) => item.id === obj.id)){
+            setCartItems(prev => prev.filter(item => item.id !== obj.id))
+        } else{
+            axios.post('https://63a74c2959fd83b1bb42f822.mockapi.io/cart', obj);
+            setCartItems(prev => [...prev, obj])
+        }
     }
 
     const onRemoveItem = (id) => {
