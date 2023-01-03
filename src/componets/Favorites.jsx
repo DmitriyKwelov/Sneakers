@@ -1,6 +1,6 @@
 import Card from "./Card/Card";
 
-const Favorite = ({items, onFavorite}) => {
+const Favorite = ({items, onFavorite, isLoading}) => {
     return (
         <div className="content">
             <div className="top-content-cart">
@@ -11,6 +11,7 @@ const Favorite = ({items, onFavorite}) => {
                     {items
                         .map((item, index) => (
                             <Card
+                                loading={isLoading}
                                 key={index}
                                 favorited={true}
                                 onFavorite={onFavorite}

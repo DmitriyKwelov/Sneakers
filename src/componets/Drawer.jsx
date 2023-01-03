@@ -8,7 +8,7 @@ const Drawer = ({onClose, onRemove, items = []}) => {
                     <div>
                         <div className="items">
                             {items.map((item) =>
-                                <div className="cartItem">
+                                <div key={item.id} className="cartItem">
                                     <div className="cartItemImg"
                                          style={{backgroundImage: `url(${item.imageUrl})`}}></div>
                                     <div className="card-info-cart">

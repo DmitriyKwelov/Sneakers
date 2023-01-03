@@ -14,22 +14,28 @@ function App() {
     const [favorites, setFavorites] = useState([]);
     const [searchValue, setSearchValue] = useState('');
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        axios.get('https://63a74c2959fd83b1bb42f822.mockapi.io/items').then(res => {
-            setItems(res.data)
-        })
-        axios.get('https://63a74c2959fd83b1bb42f822.mockapi.io/cart').then(res => {
-            setCartItems(res.data)
-        })
-        axios.get('https://63a74c2959fd83b1bb42f822.mockapi.io/favorites').then(res => {
-            setFavorites(res.data)
-        })
+        async function fetchData() {
+            setIsLoading(true)
+            const cartResponse = await axios.get('https://63a74c2959fd83b1bb42f822.mockapi.io/cart');
+            const favoritesResponse = await axios.get('https://63a74c2959fd83b1bb42f822.mockapi.io/favorites');
+            const itemsResponse = await axios.get('https://63a74c2959fd83b1bb42f822.mockapi.io/items');
+
+
+            setCartItems(cartResponse.data)
+            setFavorites(favoritesResponse.data);
+            setItems(itemsResponse.data);
+            setIsLoading(false)
+        }
+        fetchData();
     }, [])
 
     const onAddToCart = (obj) => {
-        if(cartItems.find((item) => item.id === obj.id)){
-            setCartItems(prev => prev.filter(item => item.id !== obj.id))
+        if(cartItems.find((item) => Number(item.id) === Number(obj.id))){
+            axios.delete(`https://63a74c2959fd83b1bb42f822.mockapi.io/cart/${obj.id}`)
+            setCartItems(prev => prev.filter(item => Number(item.id) !== Number(obj.id)))
         } else{
             axios.post('https://63a74c2959fd83b1bb42f822.mockapi.io/cart', obj);
             setCartItems(prev => [...prev, obj])
@@ -64,8 +70,8 @@ function App() {
             {isCartOpen && <Drawer items={cartItems} onClose={() => setIsCartOpen(false)} onRemove={onRemoveItem}/>}
             <Header onClickCart={() => setIsCartOpen(true)}/>
             <Routes>
-                <Route path="/" element={<Home items={items} searchValue={searchValue} setSearchValue={setSearchValue} onChangeSearchInput={onChangeSearchInput} onAddToFavorite={onAddToFavorite} onAddToCart={onAddToCart}/>}></Route>
-                <Route path="/favorites" element={<Favorite items={favorites} onFavorite={onAddToFavorite} />}/>
+                <Route path="/" element={<Home items={items} isLoading={isLoading} cartItems={cartItems} searchValue={searchValue} setSearchValue={setSearchValue} onChangeSearchInput={onChangeSearchInput} onAddToFavorite={onAddToFavorite} onAddToCart={onAddToCart}/>}></Route>
+                <Route path="/favorites" element={<Favorite isLoading={isLoading} items={favorites} onFavorite={onAddToFavorite} />}/>
             </Routes>
         </div>
     );
