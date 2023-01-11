@@ -1,11 +1,25 @@
+import Info from "./info";
+import React, {useState} from "react";
+import {AppContext} from "../App";
+
 const Drawer = ({onClose, onRemove, items = []}) => {
+
+    const [isOrderComplete, setIsOrderComplete] = useState();
+    const {setCartItems, emptyCart} = React.useContext(AppContext)
+
+    const onClickOrder = () => {
+        setIsOrderComplete(true);
+        setCartItems([]);
+        emptyCart();
+    }
+
     return (
         <div className="overlay">
             <div className="drawer">
                 <h2>Корзина <img onClick={onClose} className="removeBtn" src="/img/btn-remove.svg" alt="remove"/></h2>
                 {items.length > 0
                     ?
-                    <div>
+                    <>
                         <div className="items">
                             {items.map((item) =>
                                 <div key={item.id} className="cartItem">
@@ -34,16 +48,15 @@ const Drawer = ({onClose, onRemove, items = []}) => {
                                     <b>1074 руб. </b>
                                 </li>
                             </ul>
-                            <button className="greenBtn">Оформить заказ<img src="/img/arrow.svg" alt="arrow"/></button>
+                            <button onClick={onClickOrder} className="greenBtn">Оформить заказ<img src="/img/arrow.svg" alt="arrow"/></button>
                         </div>
-                    </div>
+                    </>
                     :
-                    <div className="empty-cart">
-                        <img src="/img/box.jpg"/>
-                        <h2>Корзина пустая</h2>
-                        <p>Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ.</p>
-                        <button onClick={onClose} className="greenBtn"><img src="/img/back arrow.svg" alt="arrow"/>Вернуться назад</button>
-                    </div>
+                    <Info
+                        title={isOrderComplete ? "Заказ оформлен!" : "Корзина пустая"}
+                        description={isOrderComplete ? "Ваш заказ #18 скоро будет передан курьерской доставке" : "Добавьте хотя бы одну пару кроссовок, чтобы сделать заказ."}
+                        image={isOrderComplete ? "/img/orderComplete.jpg" : "/img/box.jpg"}
+                    />
                 }
             </div>
         </div>

@@ -1,4 +1,5 @@
 import Card from "./Card/Card";
+import React from "react";
 
 const Home = ({
                   items,
@@ -10,6 +11,8 @@ const Home = ({
                   onAddToFavorite,
                   onAddToCart
               }) => {
+
+
     return (
         <div className="content">
             <div className="top-content-cart">
@@ -31,7 +34,7 @@ const Home = ({
                                 key={index}
                                 onFavorite={(obj) => onAddToFavorite(obj)}
                                 onPlus={(obj) => onAddToCart(obj)}
-                                added={cartItems.some(obj => Number(obj.id) === Number(item.id))}
+                                // added={isItemAdded(item && item.id)}
                                 loading={isLoading}
                                 {...item}
                             />
